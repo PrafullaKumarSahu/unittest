@@ -12,6 +12,7 @@ use CarouselFactory;
 
 use App\Exceptions\CreateCarouselErrorException;
 use App\Exceptions\CarouselNotFoundException;
+use App\Exceptions\UpdateCarouselErrorException;
 
 class CarouselUnitTest extends TestCase
 {
@@ -89,12 +90,36 @@ class CarouselUnitTest extends TestCase
         $carouselRepo = new CarouselRepository(new Carousel);
         $carouselRepo->findCarousel(999);
     }
-    
+
     /** @test */
     public function it_should_throw_an_error_when_the_required_columns_are_not_filled()
     {
         $this->expectException(CreateCarouselErrorException::class);
         $carouselRepo = new CarouselRepository(new Carousel);
         $carouselRepo->createCarousel([]);
+    }
+
+    /** 
+     * @test
+    */
+    public function it_should_throw_update_error_exception_when_the_carousel_has_failed_to_update()
+    {
+        $this->expectException(UpdateCarouselErrorException::class);
+
+        $carousel = factory(Carousel::class)->create();
+        $carouselRepo = new CarouselRepository($carousel);
+
+        $data = ['title' => null];
+        $carouselRepo->updateCarousel($data);
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_null_when_deleting_a_non_existing_carousel()
+    {
+        $carouselRepo = new CarouselRepository(new Carousel);
+        $delete = $carouselRepo->deleteCarousel();
+        $this->assertNull($delete);
     }
 }
