@@ -10,6 +10,9 @@ use App\Carousel;
 use App\Repositories\CarouselRepository;
 use CarouselFactory;
 
+use App\Exceptions\CreateCarouselErrorException;
+use App\Exceptions\CarouselNotFoundException;
+
 class CarouselUnitTest extends TestCase
 {
     use WithFaker;
@@ -77,6 +80,21 @@ class CarouselUnitTest extends TestCase
         $this->assertEquals($data['title'], $carousel->title);
         $this->assertEquals($data['link'], $carousel->link);
         $this->assertEquals($data['src'], $carousel->src);
+    }
 
+    /** @test */
+    public function it_should_throw_not_found_error_exception_when_the_carousel_is_not_found()
+    {
+        $this->expectException(CarouselNotFoundException::class);
+        $carouselRepo = new CarouselRepository(new Carousel);
+        $carouselRepo->findCarousel(999);
+    }
+    
+    /** @test */
+    public function it_should_throw_an_error_when_the_required_columns_are_not_filled()
+    {
+        $this->expectException(CreateCarouselErrorException::class);
+        $carouselRepo = new CarouselRepository(new Carousel);
+        $carouselRepo->createCarousel([]);
     }
 }

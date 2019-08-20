@@ -6,6 +6,7 @@ use App\Exceptions\CreateCarouselErrorException;
 use App\Exceptions\CarouselNotFoundException;
 use App\Exceptions\UpdateCarouselErrorException;
 use Illuminate\Database\QueryException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CarouselRepository
 {
@@ -28,7 +29,7 @@ class CarouselRepository
     {
         try {
             return $this->model->create($data);
-        } catch(QueryExceptioon $e ) {
+        } catch(QueryException $e ) {
             throw new CreateCarouselErrorException($e);
         }
     }
@@ -38,11 +39,11 @@ class CarouselRepository
      * @return Carousel
      * @throws CarouselNotFoundException
     */
-    public function findCarousel($carouselId) : Carousel
+    public function findCarousel(int $carouselId) : Carousel
     {
         try {
             return $this->model->findOrFail($carouselId);
-        } catch(QueryExceptioon $e ) {
+        } catch(ModelNotFoundException $e ) {
             throw new CarouselNotFoundException($e);
         }
     }
@@ -56,7 +57,7 @@ class CarouselRepository
     {
         try {
             return $this->model->update($data);
-        } catch ( QueryException $e ) {
+        } catch (QueryException $e ) {
             throw new UpdateCarouselErrorException($e);
         }
     }
