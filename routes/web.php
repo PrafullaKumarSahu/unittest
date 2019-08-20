@@ -14,3 +14,11 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Route::namespace('Admin')->group(function(){
+//     Route::resource('carousels', 'CarouselController');
+// });
+Route::resource('carousels', 'CarouselController');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

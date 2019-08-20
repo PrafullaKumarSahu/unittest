@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Carousel;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use App\Repositories\CarouselRepository;
 
 class CarouselController extends Controller
 {
@@ -14,7 +16,7 @@ class CarouselController extends Controller
      */
     public function index()
     {
-        //
+        return view('carousels.index');
     }
 
     /**
@@ -24,7 +26,7 @@ class CarouselController extends Controller
      */
     public function create()
     {
-        //
+        return view('carousels.create');
     }
 
     /**
@@ -35,7 +37,23 @@ class CarouselController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $data = $request->except('_token');
+
+            if ($request->hasFile('image') && $request->file('image') instanceOf UploadedFile) {
+                $data['src'] = $request->file('image')->store('carousels', ['disk' => 'public']);
+            }
+        
+            $carouselRepo = new CarouselRepository(new Carousel);
+            $carouselRepo->createCarousel($data);
+
+            $request->session()->flash('message', 'Create carousel successfully');
+
+            return redirect()->route('carousels.index');
+        } catch(CreateCarouselErrorException $e) {
+            $request->session()->flash('error', $e->getMessage());
+            return redirect()->back()->withInput();
+        }
     }
 
     /**
