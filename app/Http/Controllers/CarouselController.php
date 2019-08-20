@@ -35,7 +35,7 @@ class CarouselController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request) //User CaruoselUpdateRequest class instance here
     {
         try {
             $data = $request->except('_token');
