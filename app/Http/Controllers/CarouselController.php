@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use App\Repositories\CarouselRepository;
 
+use App\Http\Requests\StoreCaruosel;
+
 class CarouselController extends Controller
 {
     /**
@@ -35,13 +37,15 @@ class CarouselController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) //User CaruoselUpdateRequest class instance here
+    public function store(StoreCaruosel $request) 
     {
+        // Retrieve the validated input data...
+        $validated = $request->validated();
         try {
-            $data = $request->except('_token');
+            $data = $validated;
 
-            if ($request->hasFile('image') && $request->file('image') instanceOf UploadedFile) {
-                $data['src'] = $request->file('image')->store('carousels', ['disk' => 'public']);
+            if ($validated['src'] instanceOf UploadedFile) {
+                $data['src'] = $validated['src']->store('carousels', ['disk' => 'public']);
             }
         
             $carouselRepo = new CarouselRepository(new Carousel);
