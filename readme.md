@@ -25,7 +25,7 @@ Update Test
     4. Check if src of this carousel is same as input src given
     5. If all are okay, then create is working fine
     
- #### Positive Tests
+ #### Negative Tests
 
 Try to find a carousel with non existing id
 
