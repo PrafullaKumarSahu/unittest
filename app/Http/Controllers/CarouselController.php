@@ -8,6 +8,7 @@ use Illuminate\Http\UploadedFile;
 use App\Repositories\CarouselRepository;
 
 use App\Http\Requests\StoreCaruosel;
+use App\Http\Requests\UpdateCarousel;
 
 class CarouselController extends Controller
 {
@@ -16,9 +17,10 @@ class CarouselController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(CarouselRepository $carouselRepo)
     {
-        return view('carousels.index');
+        $carousels = $carouselRepo->getCarousels();
+        return view('carousels.index', compact('carousels'));
     }
 
     /**
@@ -40,12 +42,12 @@ class CarouselController extends Controller
     public function store(StoreCaruosel $request) 
     {
         // Retrieve the validated input data...
-        $validated = $request->validated();
-        try {
-            $data = $validated;
+        $data = $request->validated();
 
-            if ($validated['src'] instanceOf UploadedFile) {
-                $data['src'] = $validated['src']->store('carousels', ['disk' => 'public']);
+        try {
+
+            if ($data['src'] instanceOf UploadedFile) {
+                $data['src'] = $data['src']->store('carousels', ['disk' => 'public']);
             }
         
             $carouselRepo = new CarouselRepository(new Carousel);
@@ -68,7 +70,7 @@ class CarouselController extends Controller
      */
     public function show(Carousel $carousel)
     {
-        //
+        return $carousel;
     }
 
     /**
@@ -89,9 +91,12 @@ class CarouselController extends Controller
      * @param  \App\Carousel  $carousel
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Carousel $carousel)
+    public function update(UpdateCarousel $request, Carousel $carousel)
     {
-        //
+        // Retrieve the validated input data...
+        $data = $request->validated();
+        $carouselRepo = new CarouselRepository($carousel);
+        $update = $carouselRepo->updateCarousel($data);
     }
 
     /**
@@ -102,6 +107,6 @@ class CarouselController extends Controller
      */
     public function destroy(Carousel $carousel)
     {
-        //
+        $carousel->delete();
     }
 }

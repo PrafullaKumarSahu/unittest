@@ -5,6 +5,8 @@ use App\Carousel;
 use App\Exceptions\CreateCarouselErrorException;
 use App\Exceptions\CarouselNotFoundException;
 use App\Exceptions\UpdateCarouselErrorException;
+use App\Exceptions\NoCarouselFoundException;
+use App\Exceptions\DeleteCarouselErrorException;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -18,6 +20,15 @@ class CarouselRepository
     public function __construct(Carousel $carousel)
     {
         $this->model = $carousel;
+    }
+
+    public function getCarousels()
+    {
+        try {
+            return $this->model->get();
+        } catch(QueryException $e) {
+            throw new NoCarouselFoundException($e);
+        }
     }
 
     /*** 
@@ -67,7 +78,11 @@ class CarouselRepository
     */
     public function deleteCarousel() : ?bool
     {
-        return $this->model->delete();
+        try {
+            return $this->model->delete();
+        } catch(QueryException $e) {
+            throw new DeleteCarouselErrorException($e);
+        }
     }
 }
 ?>

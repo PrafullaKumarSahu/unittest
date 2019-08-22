@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class UpdateCarouselErrorException extends Exception
+class DeleteCarouselErrorException extends Exception
 {
     /**
      * Report or log an exception.
@@ -13,6 +13,6 @@ class UpdateCarouselErrorException extends Exception
      */
     public function report()
     {
-        \Log::debug('Can not update carousel');
+        \Log::debug('carousel can not be deleted');
     }
 }
