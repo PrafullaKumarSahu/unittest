@@ -1,57 +1,58 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+## Unit Test
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+#### Positive Tests
+    ###### Create Test
+        1. Create an instance of ```CarouselRepository``` class, call the ```createCarousel()``` with data to create a carousel, now
+        2. Check if the created carousel is instance of ```Carousel``` model class
+        3. Check if title of this carousel is same as input title given
+        4. Check if link of this carousel is same as input link given
+        5. Check if src of this carousel is same as input src given
+        6. If all are okay, then create is working fine
 
-## About Laravel
+    ###### Show Test
+        1. Create an instance of ```CarouselRepository``` class, call the ```findCarousel()``` by passing an id of an carousel, now
+        2. Check if it has title, link and src attributes
+        3. If all are okay, then create is working fine
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+    ###### Update Test
+        1. Create an instance of ```CarouselRepository``` class with instance of Carousel model that to be updated, call the ```updateCarousel()``` and pass data to update a carousel, now
+        2. Check if title of this carousel is same as input title given
+        3. Check if link of this carousel is same as input link given
+        4. Check if src of this carousel is same as input src given
+        5. If all are okay, then create is working fine
+    
+ #### Positive Tests
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+    ###### Try to find a carousel with non existing id
+        1. Create an instance of ```CarouselRepository``` class, call the ```findCarousel()``` by passing a non existing id, now
+        2. It should through a ```CarouselNotFoundException``` exception
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
+    ###### Try to create a carousel without required field/required value
+        1. Create an instance of ```CarouselRepository``` class, call the ```createCarousel()``` by skipping any required field in ```$data``` array
+        2. It should through a ```CreateCarouselErrorException``` exception
 
-## Learning Laravel
+    ###### Try to create a carousel with invalid value for any field
+        1. Create an instance of ```CarouselRepository``` class, call the ```createCarousel()``` by passing any invalid field/value in ```$data``` array
+        2. It should through a ```UpdateCarouselErrorException``` exception
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
+     ###### Try to delete a non existing carousel
+        1. Create an instance of ```CarouselRepository``` class, call the ```deleteCarousel()``` by passing a non existing carousel id
+        2. It should return null
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+## Feature Test
+    ###### Check if create carousel form page is accessible and having correct fields
+        1. Create a form to create a carousel
+        2. Using ```get()``` method visit the form route, check if ```assertStatus()```  method returns 200
+        3. And then if ```assertSee()``` method can see title, link and Image fields
 
-## Laravel Sponsors
+     ###### Check if store carousel is working fine after posting the create form and redirecting to index page
+        1. Post data to carousels.store route, check if ```assertStatus()```  method returns 302
+        2. Redirect to carouseld.index route using ```assertRedirect```
+        3. Now if  ```assertSessionHas``` returns true for message "Create carousel successfully", then everything fine
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
+## Repository Design Pattern
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Pulse Storm](http://www.pulsestorm.net/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+The real idea is to not allowing Contollers to communicate with Models directly, so Controllers will communicate with repositories and repositories will communicate with Models, but as it will break <strong>route-model</strong> concept, so what I did is just allowing Controller to accept and create model instance only to create Repository instance, rest jobs will be done in Repositories, so there will be only read only transaction fro controller to model and no direct write transaction.
 
 ## License
 

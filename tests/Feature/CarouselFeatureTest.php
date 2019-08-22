@@ -23,7 +23,7 @@ class CarouselFeatureTest extends TestCase
     {
         $employee = factory(User::class)->create();
 
-        $this//->actingAs($emplyee, 'admin')
+        $this//->actingAs($emplyee, 'admin') when admin authorization required
             ->get(route('carousels.create'))
             ->assertStatus(200)
             ->assertSee('Title')
