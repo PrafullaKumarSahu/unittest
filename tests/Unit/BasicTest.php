@@ -18,6 +18,7 @@ class BasicTest extends TestCase
         $basket = collect(['item_one', 'item_two', 'item_three']);
         $this->assertTrue($basket->contains('item_one'));
         // $this->assertTrue($basket->contains('item_four'));
+        $this->assertContains('item_one', $basket);
         $this->assertTrue(true);
     }
 
