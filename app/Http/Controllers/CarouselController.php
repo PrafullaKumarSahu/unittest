@@ -108,6 +108,7 @@ class CarouselController extends Controller
     public function destroy(Carousel $carousel)
     {
         $carouselRepo = new CarouselRepository($carousel);
-        $update = $carouselRepo->deleteCarousel();
+        $carouselRepo->deleteCarousel();
+        redirect()->back();
     }
 }
